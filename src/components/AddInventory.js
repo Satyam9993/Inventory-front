@@ -4,7 +4,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import ImageUpload from './ImageUpload';
-// import { setEmployees } from '../state';
+import { setInvUpdate } from '../state/index';
 import { storage } from '../utils/firebase'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { v4 } from 'uuid';
@@ -67,7 +67,11 @@ const AddEmployeeCard = () => {
                         }
                     );
                     const InvData = await data.json();
-                    console.log(InvData);
+                    console.log("inv", InvData);
+                    dispatch(setInvUpdate({
+                        invUpdate : InvData.inv
+                    }))
+                    handleCloseModal();
                 })
             }).catch((err) => {
                 alert(err)
