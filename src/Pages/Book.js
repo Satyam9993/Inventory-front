@@ -12,7 +12,7 @@ const Book = () => {
   const [tab, setTab] = useState("inv");
   const token = useSelector(state => state.token);
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     fetchInventory()
   }, [])
@@ -37,7 +37,9 @@ const Book = () => {
       <Header />
       <Navbar />
       <BookTab setTab={setTab} tab={tab}/>
+      <div className='flex justify-end'>
       <AddInventory />
+      </div>
       {tab === "inv" && <Inventory /> }
       {tab === "items" && <>items</>}
       {tab === "exp" && <>exp</>}

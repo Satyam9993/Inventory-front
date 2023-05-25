@@ -48,7 +48,7 @@ const AddEmployeeCard = () => {
 
     const handleAddInv = async (values) => {
         try {
-            if(images.length!==0){
+            if (images.length !== 0) {
                 const img = images[0]['files'];
                 const imageRef = ref(storage, `images/inv/${v4()}`);
                 await uploadBytes(imageRef, img).then((snapshort) => {
@@ -60,9 +60,9 @@ const AddEmployeeCard = () => {
                         const data = await fetch(`${BACKEND_URL}/api/inv`,
                             {
                                 method: 'POST',
-                                headers: { 
-                                    "Content-Type": "application/json" ,
-                                    "Authorization":`Bearer ${token}`
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "Authorization": `Bearer ${token}`
                                 },
                                 body: JSON.stringify(body)
                             }
@@ -70,7 +70,7 @@ const AddEmployeeCard = () => {
                         const InvData = await data.json();
                         console.log("inv", InvData);
                         dispatch(setInvAddNew({
-                            inv : InvData.inv
+                            inv: InvData.inv
                         }));
                         setImages([]);
                         handleCloseModal();
@@ -78,7 +78,7 @@ const AddEmployeeCard = () => {
                 }).catch((err) => {
                     alert(err)
                 })
-            }else{
+            } else {
                 const body = {
                     ...values,
                     image: ''
@@ -86,9 +86,9 @@ const AddEmployeeCard = () => {
                 const data = await fetch(`${BACKEND_URL}/api/inv`,
                     {
                         method: 'POST',
-                        headers: { 
-                            "Content-Type": "application/json" ,
-                            "Authorization":`Bearer ${token}`
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
                         },
                         body: JSON.stringify(body)
                     }
@@ -96,7 +96,7 @@ const AddEmployeeCard = () => {
                 const InvData = await data.json();
                 console.log("inv", InvData);
                 dispatch(setInvAddNew({
-                    inv : InvData.inv
+                    inv: InvData.inv
                 }));
                 setImages([]);
                 handleCloseModal();
@@ -106,17 +106,18 @@ const AddEmployeeCard = () => {
         }
     };
 
-    console.log(images);
-
     return (
         <>
-            <div className="lg:flex border border-sky-500 cursor-pointer">
+            <div className="lg:flex border border-gray-300 cursor-pointer rounded-md">
                 <button
-                    className="text-gray-200 hover:text-blue-600 text-lg  font-medium px-4 py-2 inline-flex space-x-1 items-center"
+                    className="text-gray-800 hover:text-blue-600 hover:bg-gray-100 text-lg  font-medium px-4 py-2 inline-flex space-x-1 items-center"
                     onClick={handleShowModal}
                 >
-                    <span>
-                        Add
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    <span mx-2>
+                        Add to Inventory
                     </span>
                 </button>
             </div>
