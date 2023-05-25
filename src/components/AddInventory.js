@@ -48,34 +48,59 @@ const AddEmployeeCard = () => {
 
     const handleAddInv = async (values) => {
         try {
-            const img = images[0]['files'];
-            const imageRef = ref(storage, `images/inv/${v4()}`);
-            await uploadBytes(imageRef, img).then((snapshort) => {
-                getDownloadURL(snapshort.ref).then(async (url) => {
-                    const body = {
-                        ...values,
-                        image: url
-                    }
-                    const data = await fetch(`${BACKEND_URL}/api/inv`,
-                        {
-                            method: 'POST',
-                            headers: { 
-                                "Content-Type": "application/json" ,
-                                "Authorization":`Bearer ${token}`
-                            },
-                            body: JSON.stringify(body)
+            if(images.length!==0){
+                const img = images[0]['files'];
+                const imageRef = ref(storage, `images/inv/${v4()}`);
+                await uploadBytes(imageRef, img).then((snapshort) => {
+                    getDownloadURL(snapshort.ref).then(async (url) => {
+                        const body = {
+                            ...values,
+                            image: url
                         }
-                    );
-                    const InvData = await data.json();
-                    console.log("inv", InvData);
-                    dispatch(setInvAddNew({
-                        inv : InvData.inv
-                    }))
-                    handleCloseModal();
+                        const data = await fetch(`${BACKEND_URL}/api/inv`,
+                            {
+                                method: 'POST',
+                                headers: { 
+                                    "Content-Type": "application/json" ,
+                                    "Authorization":`Bearer ${token}`
+                                },
+                                body: JSON.stringify(body)
+                            }
+                        );
+                        const InvData = await data.json();
+                        console.log("inv", InvData);
+                        dispatch(setInvAddNew({
+                            inv : InvData.inv
+                        }));
+                        setImages([]);
+                        handleCloseModal();
+                    })
+                }).catch((err) => {
+                    alert(err)
                 })
-            }).catch((err) => {
-                alert(err)
-            })
+            }else{
+                const body = {
+                    ...values,
+                    image: ''
+                }
+                const data = await fetch(`${BACKEND_URL}/api/inv`,
+                    {
+                        method: 'POST',
+                        headers: { 
+                            "Content-Type": "application/json" ,
+                            "Authorization":`Bearer ${token}`
+                        },
+                        body: JSON.stringify(body)
+                    }
+                );
+                const InvData = await data.json();
+                console.log("inv", InvData);
+                dispatch(setInvAddNew({
+                    inv : InvData.inv
+                }));
+                setImages([]);
+                handleCloseModal();
+            }
         } catch (err) {
             alert(err);
         }
