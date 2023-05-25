@@ -11,11 +11,10 @@ import { v4 } from 'uuid';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const AddEmployeeCard = () => {
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
     const [showModal, setShowModal] = useState(false);
     const [images, setImages] = useState([]);
-    const [imageurl, setImageurl] = useState([]);
-    // const token = useSelector((state) => state.token);
+    const token = useSelector((state) => state.token);
 
     const RegisterSchema = Yup.object().shape({
         itemName: Yup.string()
@@ -47,42 +46,6 @@ const AddEmployeeCard = () => {
         setShowModal(false)
     };
 
-    // const handleImageUpload = async () => {
-    //     for (let i = 0; i < images.length; i++) {
-    //         const img = images[i]['files'];
-    //         const imageRef = ref(storage, `images/inv/${v4()}`);
-    //         await uploadBytes(imageRef, img).then((snapshort) => {
-    //             getDownloadURL(snapshort.ref).then((url) => {
-    //                 setImageurl((prevImageUrls) => [...prevImageUrls, url]);
-    //             })
-    //         }).catch((err) => {
-    //             alert(err)
-    //         })
-    //     }
-    // };
-
-    const handleImageUpload = () => {
-        return new Promise((resolve, reject) => {
-            const promises = [];
-
-            for (let i = 0; i < images.length; i++) {
-                const img = images[i]['files'];
-                const imageRef = ref(storage, `images/inv/${v4()}`);
-
-                const promise = uploadBytes(imageRef, img)
-                    .then((snapshot) => getDownloadURL(snapshot.ref))
-                    .then((url) => setImageurl([...imageurl, url]))
-                    .catch((err) => reject(err));
-
-                promises.push(promise);
-            }
-
-            Promise.all(promises)
-                .then(() => resolve())
-                .catch((err) => reject(err));
-        });
-    };
-
     const handleAddInv = async (values) => {
         try {
             const img = images[0]['files'];
@@ -98,7 +61,7 @@ const AddEmployeeCard = () => {
                             method: 'POST',
                             headers: { 
                                 "Content-Type": "application/json" ,
-                                "Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQ2ZGEyZDk3ZDE0ODM4MjcxNTJjOGUzIn0sImlhdCI6MTY4NTAzMzE1NH0.aAy29y7TSVkAlxyY2H92RwYYrJAWFFbjnKJRuCdthIc"
+                                "Authorization":`Bearer ${token}`
                             },
                             body: JSON.stringify(body)
                         }

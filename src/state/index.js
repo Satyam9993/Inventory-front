@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   user: null,
   token: null,
-  employees: [],
+  inv : [],
 };
 
 export const authSlice = createSlice({
@@ -19,18 +19,18 @@ export const authSlice = createSlice({
       state.token = null;
     },
 
-    setEmployees: (state, action) => {
-      state.employees = action.payload.employees;
+    setInv: (state, action) => {
+      state.inv = action.payload.inv;
     },
-    setEmployee: (state, action) => {
-      const updatedEmployees = state.employees.map((employee) => {
-        if (employee._id === action.payload.employee._id) return action.payload.employee;
-        return employee;
+    setInvUpdate: (state, action) => {
+      const updatedInv = state.inv.map((inv) => {
+        if (inv._id === action.payload.invUpdate._id) return action.payload.invUpdate;
+        return inv;
       });
-      state.employees = updatedEmployees;
+      state.inv = updatedInv;
     },
   },
 });
 
-export const { setLogin, setLogout, setEmployees, setEmployee } = authSlice.actions;
+export const { setLogin, setLogout, setInv, setEmployee } = authSlice.actions;
 export default authSlice.reducer;
