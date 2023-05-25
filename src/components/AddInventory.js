@@ -5,12 +5,16 @@ import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import ImageUpload from './ImageUpload';
 // import { setEmployees } from '../state';
-// const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+import { storage } from '../utils/firebase'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { v4 } from 'uuid';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const AddEmployeeCard = () => {
     // const dispatch = useDispatch();
     const [showModal, setShowModal] = useState(false);
     const [images, setImages] = useState([]);
+    const [imageurl, setImageurl] = useState([]);
     // const token = useSelector((state) => state.token);
 
     const RegisterSchema = Yup.object().shape({
@@ -43,9 +47,74 @@ const AddEmployeeCard = () => {
         setShowModal(false)
     };
 
-    const handleAddInv = (values) => {
-        console.log(values);
+    // const handleImageUpload = async () => {
+    //     for (let i = 0; i < images.length; i++) {
+    //         const img = images[i]['files'];
+    //         const imageRef = ref(storage, `images/inv/${v4()}`);
+    //         await uploadBytes(imageRef, img).then((snapshort) => {
+    //             getDownloadURL(snapshort.ref).then((url) => {
+    //                 setImageurl((prevImageUrls) => [...prevImageUrls, url]);
+    //             })
+    //         }).catch((err) => {
+    //             alert(err)
+    //         })
+    //     }
+    // };
+
+    const handleImageUpload = () => {
+        return new Promise((resolve, reject) => {
+            const promises = [];
+
+            for (let i = 0; i < images.length; i++) {
+                const img = images[i]['files'];
+                const imageRef = ref(storage, `images/inv/${v4()}`);
+
+                const promise = uploadBytes(imageRef, img)
+                    .then((snapshot) => getDownloadURL(snapshot.ref))
+                    .then((url) => setImageurl([...imageurl, url]))
+                    .catch((err) => reject(err));
+
+                promises.push(promise);
+            }
+
+            Promise.all(promises)
+                .then(() => resolve())
+                .catch((err) => reject(err));
+        });
     };
+
+    const handleAddInv = async (values) => {
+        try {
+            const img = images[0]['files'];
+            const imageRef = ref(storage, `images/inv/${v4()}`);
+            await uploadBytes(imageRef, img).then((snapshort) => {
+                getDownloadURL(snapshort.ref).then(async (url) => {
+                    const body = {
+                        ...values,
+                        image: url
+                    }
+                    const data = await fetch(`${BACKEND_URL}/api/inv`,
+                        {
+                            method: 'POST',
+                            headers: { 
+                                "Content-Type": "application/json" ,
+                                "Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQ2ZGEyZDk3ZDE0ODM4MjcxNTJjOGUzIn0sImlhdCI6MTY4NTAzMzE1NH0.aAy29y7TSVkAlxyY2H92RwYYrJAWFFbjnKJRuCdthIc"
+                            },
+                            body: JSON.stringify(body)
+                        }
+                    );
+                    const InvData = await data.json();
+                    console.log(InvData);
+                })
+            }).catch((err) => {
+                alert(err)
+            })
+        } catch (err) {
+            alert(err);
+        }
+    };
+
+    console.log(images);
 
     return (
         <>
@@ -196,7 +265,7 @@ const AddEmployeeCard = () => {
                                                                 <select
                                                                     id="unit"
                                                                     className="w-full dark:bg-[#000226] bg-opacity-50 border-b border-gray-300 focus:border-gray-300 focus:dark:bg-[#000226] text-base outline-none text-gray-200 py-1 px-1 leading-8 transition-colors duration-200 ease-in-out"
-                                                                    name="item"
+                                                                    name="unit"
                                                                     onChange={handleChange('unit')}
                                                                 >
                                                                     <option value="unit">Units(UNT)</option>
@@ -242,7 +311,7 @@ const AddEmployeeCard = () => {
                                                             <div className="relative">
 
                                                                 <label className="relative inline-flex items-center cursor-pointer">
-                                                                    <input type="checkbox" value={true} checked={values.stockwarning} className="sr-only peer" onChange={handleChange('stockwarning')} />
+                                                                    <input type="checkbox" checked={values.stockwarning} className="sr-only peer" onChange={handleChange('stockwarning')} />
                                                                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                                                                     <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Enable Low Stock Warning.</span>
                                                                 </label>
@@ -300,7 +369,7 @@ const AddEmployeeCard = () => {
                                                                 </div>
                                                                 <div className="relative w-1/2 mt-10">
                                                                     <label className="relative inline-flex items-center cursor-pointer">
-                                                                        <input type="checkbox" value={true} checked={values.inclusivetax} className="sr-only peer" onChange={handleChange('inclusivetax')} />
+                                                                        <input type="checkbox" checked={values.inclusivetax} className="sr-only peer" onChange={handleChange('inclusivetax')} />
                                                                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                                                                         <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Inclusive Tax</span>
                                                                     </label>
