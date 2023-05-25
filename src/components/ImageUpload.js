@@ -1,9 +1,8 @@
 import React, { useRef, useState } from 'react';
 import './ImageUpload.css';
 
-const ImageUpload = () => {
+const ImageUpload = ({images, setImages}) => {
 
-    const [images, setImages] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef(null);
 

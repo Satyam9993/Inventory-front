@@ -10,6 +10,7 @@ import ImageUpload from './ImageUpload';
 const AddEmployeeCard = () => {
     // const dispatch = useDispatch();
     const [showModal, setShowModal] = useState(false);
+    const [images, setImages] = useState([]);
     // const token = useSelector((state) => state.token);
 
     const RegisterSchema = Yup.object().shape({
@@ -90,7 +91,7 @@ const AddEmployeeCard = () => {
                                                 <div className="lg:w-2/2 md:w-5/5 mx-auto">
                                                     <div className="flex flex-wrap">
                                                         <div className="p-2 w-full">
-                                                            <ImageUpload />
+                                                            <ImageUpload images={images} setImages={setImages} />
                                                         </div>
                                                         <div className="p-2 w-full">
                                                             <div className="relative">
