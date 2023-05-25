@@ -29,8 +29,11 @@ export const authSlice = createSlice({
       });
       state.inv = updatedInv;
     },
+    setInvAddNew: (state, action) => {
+      state.inv = [...state.inv, action.payload.inv];
+    },
   },
 });
 
-export const { setLogin, setLogout, setInv, setInvUpdate } = authSlice.actions;
+export const { setLogin, setLogout, setInv, setInvUpdate, setInvAddNew } = authSlice.actions;
 export default authSlice.reducer;
