@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Inventorycard = () => {
+const Inventorycard = ({ inv }) => {
     return (
         <tr>
             <td className="w-4 p-4">
@@ -10,28 +10,36 @@ const Inventorycard = () => {
                 </div>
             </td>
             <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
-                Winter 500
+                {inv.itemName}
             </th>
             <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
-
+                {inv.code}
             </th>
             <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
-                Panel
+                {inv.category}
             </th>
             <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
-                0
+                {inv.openstock}{" "}{inv.unit}
             </th>
             <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
-                0
-            </th>
-            <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
-                0 ₹
+                {0}{" "}{inv.unit}
             </th>
             <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
                 0 ₹
             </th>
-            <td className="px-6 py-2 text-right">
-                adsd
+            <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
+                {inv.purchaseprice} ₹
+            </th>
+            <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
+                {(inv.stockwarning && (inv.openstock <= inv.lowstockunit)) && <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 text-red-500">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                </svg>}
+            </th>
+            <th scope="row" className="px-6 py-2 font-medium text-gray-900 whitespace-nowrap">
+                stock adjust modal
+            </th>
+            <td className="px-2 py-2 text-right">
+                modal
             </td>
         </tr>
     )

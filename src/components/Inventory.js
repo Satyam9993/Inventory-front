@@ -4,19 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const Inventory = () => {
     const [text, setText] = useState("")
-    const todoList = useSelector(state => state.todo);
+    const inventory = useSelector(state => state.inv);
     const dispatch = useDispatch();
-
-    const AddTodo = () => {
-        if (text) {
-            // dispatch(setAddTodo({ todo: text }));
-            setText("");
-        }
-    };
-
-    const changetext = (e) => {
-        setText(e.target.value)
-    }
+    console.log("satyam", inventory);
     return (
         <div className='h-[550px] overflow-y-scroll mx-1'>
             <div className="mx-auto border-y-2">
@@ -54,10 +44,9 @@ const Inventory = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <InventoryCard />
-                            <InventoryCard />
-                            <InventoryCard />
-                            <InventoryCard />
+                            {inventory.map((inv) => (
+                                <InventoryCard inv={inv} key={inv._id} />
+                            ))}
                         </tbody>
                     </table>
                 </div>
