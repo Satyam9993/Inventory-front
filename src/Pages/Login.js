@@ -27,9 +27,8 @@ const Login = () => {
     );
     const login = await data.json();
     if (login) {
-        console.log(login);
       dispatch(setLogin({
-        user: login.userId,
+        userId: login.userId,
         token: login.token
       }));
       navigate("/");
