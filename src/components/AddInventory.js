@@ -30,7 +30,7 @@ const AddEmployeeCard = () => {
         openstock: Yup.number(),
         // date
         stockwarning: Yup.boolean(),
-        lowstockunit: Yup.boolean(),
+        lowstockunit: Yup.number(),
 
         // price details
         purchaseprice: Yup.number(),
@@ -116,7 +116,7 @@ const AddEmployeeCard = () => {
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
-                    <span mx-2>
+                    <span className='mx-2'>
                         Add to Inventory
                     </span>
                 </button>
