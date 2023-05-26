@@ -4,6 +4,7 @@ const initialState = {
   userId: null,
   token: null,
   inv : [],
+  selectedInv : [],
 };
 
 export const authSlice = createSlice({
@@ -32,8 +33,27 @@ export const authSlice = createSlice({
     setInvAddNew: (state, action) => {
       state.inv = [...state.inv, action.payload.inv];
     },
+    setselectedInvChange: (state, action) => {
+      if(state.selectedInv.includes(action.payload.invId)){
+        const invIds = state.selectedInv.filter((inv => inv !== action.payload.invId))
+        console.log(invIds)
+        state.selectedInv = invIds;
+      }else{
+        state.selectedInv = [...state.selectedInv, action.payload.invId];
+      }
+    },
+    setselectedInvAll: (state) => {
+      let invs = [];
+      for(let i = 0; i < state.inv.length; i++){
+        invs = [...invs, state.inv[i]._id]
+      }
+      state.selectedInv =  invs;
+    },
+    setselectedRemoveAll: (state) => {
+      state.selectedInv =  [];
+    },
   },
 });
 
-export const { setLogin, setLogout, setInv, setInvUpdate, setInvAddNew } = authSlice.actions;
+export const { setLogin, setLogout, setInv, setInvUpdate, setInvAddNew, setselectedInvChange, setselectedRemoveAll, setselectedInvAll } = authSlice.actions;
 export default authSlice.reducer;

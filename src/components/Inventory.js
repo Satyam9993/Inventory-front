@@ -1,12 +1,41 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import InventoryCard from './Inventorycard'
 import { useDispatch, useSelector } from 'react-redux';
+import { setselectedInvAll, setselectedRemoveAll } from '../state';
 
 const Inventory = () => {
-    const [text, setText] = useState("")
+    const selectedInv = useSelector(state => state.selectedInv);
+    const invtory = useSelector(state => state.inv);
     const inventory = useSelector(state => state.inv);
+    const [isSelectedAll, setisSelectedAll] = useState(false)
     const dispatch = useDispatch();
-    console.log("satyam", inventory);
+
+    useEffect(() => {
+        setisSelectedAll(selectedAllInventory())
+    }, [selectedInv])
+
+    useEffect(() => {
+        setisSelectedAll(selectedAllInventory())
+    }, [invtory])
+
+
+
+
+    const selectedAllInventory = () => {
+        if (selectedInv.length === invtory.length) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    const selectAll = (e) => {
+        dispatch(setselectedInvAll());
+    };
+    const removeAll = (e) => {
+        dispatch(setselectedRemoveAll());
+    };
+    console.log(isSelectedAll);
     return (
         <div className='h-[550px] overflow-y-scroll mx-1'>
             <div className="mx-auto border-y-2">
@@ -15,10 +44,13 @@ const Inventory = () => {
                         <thead className="text-xs uppercase">
                             <tr>
                                 <th scope="col" className="px-4 py-3">
-                                    <div className="flex items-center">
-                                        <input id="checkbox-table-search-1" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                    {isSelectedAll===true ? <div className="flex items-center">
+                                        <input id="checkbox" type="checkbox" checked={true} onChange={removeAll} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                         <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>
-                                    </div>
+                                    </div> : <div className="flex items-center">
+                                        <input id="checkbox" type="checkbox" checked={false} onChange={selectAll} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                        <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>
+                                    </div>}
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Item Name
@@ -44,7 +76,7 @@ const Inventory = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {inventory.map((inv) => (
+                            {inventory?.map((inv) => (
                                 <InventoryCard inv={inv} key={inv._id} />
                             ))}
                         </tbody>
