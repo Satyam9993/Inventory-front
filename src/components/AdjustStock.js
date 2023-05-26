@@ -55,9 +55,9 @@ const AdjustStock = ({ inv }) => {
 
     return (
         <>
-            <div className="lg:flex border border-gray-300 cursor-pointer rounded-md">
+            <div className="lg:flex cursor-pointer">
                 <button
-                    className="text-gray-800 hover:text-blue-600 hover:bg-gray-100 text-sm  font-medium p-2 inline-flex space-x-1 items-center"
+                    className="text-gray-800 hover:text-blue-600 hover:bg-gray-100 rounded-md text-sm border border-gray-300  font-medium p-2 inline-flex items-center"
                     onClick={handleShowModal}
                 >
                     Adjust Stock
