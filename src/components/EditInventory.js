@@ -45,7 +45,7 @@ const EditInventory = ({inv}) => {
         }else{
             setIsImageChange(false);
         }
-    }, [])
+    }, [inv])
     
 
     const cancelImageChange = () => {
