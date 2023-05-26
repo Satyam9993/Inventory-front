@@ -108,15 +108,12 @@ const AddEmployeeCard = () => {
         <>
             <div className="lg:flex border border-gray-300 cursor-pointer rounded-md">
                 <button
-                    className="text-gray-800 hover:text-blue-600 hover:bg-gray-100 text-sm  font-medium px-4 py-2 inline-flex space-x-1 items-center"
+                    className="text-gray-800 hover:text-blue-600 hover:bg-gray-100 text-sm  font-medium p-2 inline-flex space-x-1 items-center"
                     onClick={handleShowModal}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                    <span className='mx-2'>
-                        Add to Inventory
-                    </span>
+                    </svg>Add to Inventory
                 </button>
             </div>
             {showModal && (
