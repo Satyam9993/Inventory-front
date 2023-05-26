@@ -2,6 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { setselectedInvChange } from '../state';
 import EditInventory from './EditInventory';
+import AdjustStock from './AdjustStock';
 
 const Inventorycard = ({ inv }) => {
     
@@ -52,7 +53,7 @@ const Inventorycard = ({ inv }) => {
                 <EditInventory inv={inv}/>
             </th>
             <td className="px-2 py-2 text-right">
-                stock adjust modal
+                <AdjustStock inv={inv} />
             </td>
         </tr>
     )
