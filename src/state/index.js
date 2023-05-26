@@ -36,7 +36,6 @@ export const authSlice = createSlice({
     setselectedInvChange: (state, action) => {
       if(state.selectedInv.includes(action.payload.invId)){
         const invIds = state.selectedInv.filter((inv => inv !== action.payload.invId))
-        console.log(invIds)
         state.selectedInv = invIds;
       }else{
         state.selectedInv = [...state.selectedInv, action.payload.invId];
