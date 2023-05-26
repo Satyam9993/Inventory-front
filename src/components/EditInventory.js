@@ -11,7 +11,6 @@ import { v4 } from 'uuid';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const EditInventory = ({inv}) => {
-    console.log("Satyam", inv);
     const dispatch = useDispatch();
     const [showModal, setShowModal] = useState(false);
     const [images, setImages] = useState([]);
@@ -64,7 +63,6 @@ const EditInventory = ({inv}) => {
 
     const handleAddInv = async (values) => {
         try {
-            console.log(images.length);
             if (images.length !== 0) {
                 const img = images[0]['files'];
                 const imageRef = ref(storage, `images/inv/${v4()}`);
