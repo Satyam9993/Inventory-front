@@ -8,15 +8,17 @@ const Inventory = ({deleteSelectedInv}) => {
     const selectedInv = useSelector(state => state.selectedInv);
     const invtory = useSelector(state => state.inv);
     const inventory = useSelector(state => state.inv);
-    const [isSelectedAll, setisSelectedAll] = useState(false)
+    const [isSelectedAll, setisSelectedAll] = useState(false);
+    const [invData, setInvData] = useState(invtory)
     const dispatch = useDispatch();
-
+    
     useEffect(() => {
         setisSelectedAll(selectedAllInventory())
     }, [selectedInv])
 
     useEffect(() => {
         setisSelectedAll(selectedAllInventory())
+        setInvData(invtory)
     }, [invtory])
 
 
@@ -36,11 +38,26 @@ const Inventory = ({deleteSelectedInv}) => {
     const removeAll = (e) => {
         dispatch(setselectedRemoveAll());
     };
+
+    const filteredData = () => {
+        const data = invtory.filter(inv => (inv.stockwarning && (inv.openstock <= inv.lowstockunit)));
+        setInvData(data);
+    }
     
+    const ResetFilter = () => {
+        setInvData(invtory);
+    }
 
     return (
         <div>
             <div className='flex justify-end'>
+                <div className='mx-2'>
+                    {inventory.length === invData.length ? 
+                    <button className='p-2 border border-gray-300 rounded-md text-sm hover:text-blue-500 hover:bg-gray-100' onClick={filteredData} >Show Low Stock</button>
+                    :
+                    <button className='p-2 border border-gray-300 rounded-md text-sm hover:text-blue-500 hover:bg-gray-100' onClick={ResetFilter} >Remove Filter</button>
+                    }
+                </div>
                 <div className='mx-2'>
                     <button className='p-2 border border-gray-300 rounded-md text-sm hover:text-blue-500 hover:bg-gray-100' onClick={deleteSelectedInv} >Delete</button>
                 </div>
@@ -87,7 +104,7 @@ const Inventory = ({deleteSelectedInv}) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {inventory?.map((inv) => (
+                                {invData?.map((inv) => (
                                     <InventoryCard inv={inv} key={inv._id} />
                                 ))}
                             </tbody>
