@@ -3,17 +3,18 @@ import './style.css';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { setInvAddNew } from '../state/index';
+import { setInvUpdate } from '../state/index';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const AdjustStock = ({ inv }) => {
     const dispatch = useDispatch();
     const [showModal, setShowModal] = useState(false);
+    const [isAdd, setIsAdd] = useState(false);
     const token = useSelector((state) => state.token);
 
     const stockSchema = Yup.object().shape({
-        description: Yup.string(),
-        adjuststock: Yup.number(),
+        remark: Yup.string(),
+        adjuststock: isAdd?Yup.number().min(0, "Cannot be negitive"):Yup.number().min(0, "Cannot be negitive").max(inv.openstock),
     });
 
     const handleShowModal = () => {
@@ -27,11 +28,13 @@ const AdjustStock = ({ inv }) => {
     const handleAddInv = async (values) => {
         try {
             const body = {
-                ...values
+                ...values,
+                isAdd : isAdd,
+                openstock: inv.openstock
             }
-            const data = await fetch(`${BACKEND_URL}/api/inv`,
+            const data = await fetch(`${BACKEND_URL}/api/inv/adjust/${inv._id}`,
                 {
-                    method: 'POST',
+                    method: 'PUT',
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`
@@ -40,11 +43,12 @@ const AdjustStock = ({ inv }) => {
                 }
             );
             const InvData = await data.json();
-            dispatch(setInvAddNew({
-                inv: InvData.inv
+            dispatch(setInvUpdate({
+                invUpdate : InvData.inv
             }));
             handleCloseModal();
         } catch (err) {
+            console.log(err);
             alert(err);
         }
     };
@@ -61,7 +65,7 @@ const AdjustStock = ({ inv }) => {
             </div>
             {showModal && (
                 <Formik
-                    initialValues={{ description: '', adjuststock: 0, isAdd: true }}
+                    initialValues={{ remark: '', adjuststock: 0, isAdd: true }}
                     validationSchema={stockSchema}
                     onSubmit={(values) => {
                         handleAddInv(values);
@@ -81,7 +85,7 @@ const AdjustStock = ({ inv }) => {
                                         className="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"
                                         onClick={handleCloseModal}
                                     />
-                                    <div className="modal-container dark:bg-[#000226] dark:text-white mx-auto rounded shadow-lg z-50">
+                                    <div className=" md:w-[50%] lg:w-[45%] modal-container dark:bg-[#000226] dark:text-white mx-auto rounded shadow-lg z-50">
                                         <div className='flex flex-row edit-form p-4 sm:mt-18'>
                                             <div className="modal-content text-left px-6">
                                                 <div className="flex flex-row justify-between">
@@ -116,12 +120,12 @@ const AdjustStock = ({ inv }) => {
                                                         </div>
                                                         <div className="p-2 w-full flex">
                                                             <div className="flex items-center w-1/2">
-                                                                <input id="checkbox1" checked={true} type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                                                <input id="checkbox1" checked={isAdd} type="checkbox" onChange={() => setIsAdd(!isAdd)} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                                                 <label htmlFor="checkbox1" className="sr-only">checkbox</label>
                                                                 <label htmlFor="checkbox1" className='text-sm ml-2 font-bold'>Add More (+)</label>
                                                             </div>
                                                             <div className="flex items-center  w-1/2">
-                                                                <input id="checkbox2" checked={true} type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                                                <input id="checkbox2" checked={!isAdd} type="checkbox" onChange={() => setIsAdd(!isAdd)} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                                                 <label htmlFor="checkbox2" className="sr-only">Reduce</label>
                                                                 <label htmlFor="checkbox2" className='text-sm ml-2 font-bold'>Reduce (-)</label>
                                                             </div>
@@ -146,6 +150,30 @@ const AdjustStock = ({ inv }) => {
                                                             {touched.adjuststock && errors.adjuststock && (
                                                                 <p className="text-[#ff0d10]">
                                                                     {errors.adjuststock}
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                        <div className="p-2 w-full">
+                                                            <div className="relative w-1/2">
+                                                                {isAdd ?
+                                                                    <p className='font-bold'>Final Stock : {Number(inv.openstock) + Number(values.adjuststock)}</p> :
+                                                                    <p className='font-bold'>Final Stock : {inv.openstock - values.adjuststock}</p>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                        <div className="p-2 w-full">
+                                                            <div className="relative">
+                                                                <textarea
+                                                                    type="text"
+                                                                    name="remark"
+                                                                    className="w-full dark:bg-[#000226] bg-opacity-50 border-2 border-gray-400 focus:border-gray-300 focus:dark:bg-[#000226] text-base outline-none text-gray-200 py-1 px-1 leading-8 transition-colors duration-200 ease-in-out"
+                                                                    placeholder='Remark optional'
+                                                                    onChange={handleChange('remark')}
+                                                                ></textarea>
+                                                            </div>
+                                                            {touched.remark && errors.remark && (
+                                                                <p className="text-[#ff0d10]">
+                                                                    {errors.remark}
                                                                 </p>
                                                             )}
                                                         </div>
