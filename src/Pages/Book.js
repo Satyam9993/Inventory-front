@@ -3,7 +3,6 @@ import Header from '../components/Header';
 import Navbar from '../components/Navbar';
 import BookTab from '../components/BookTab';
 import Inventory from '../components/Inventory';
-import AddInventory from '../components/AddInventory';
 import { useDispatch, useSelector } from 'react-redux';
 import { setInv } from '../state';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -64,15 +63,7 @@ const Book = () => {
       <Header />
       <Navbar />
       <BookTab setTab={setTab} tab={tab} />
-      <div className='flex justify-end'>
-        <div className='mx-2'>
-          <button className='p-2 border border-gray-300 rounded-md text-sm hover:text-blue-500 hover:bg-gray-100' onClick={deleteSelectedInv} >Delete</button>
-        </div>
-        <div className='mx-2 mr-4'>
-          <AddInventory />
-        </div>
-      </div>
-      {tab === "inv" && <Inventory />}
+      {tab === "inv" && <Inventory deleteSelectedInv={deleteSelectedInv}/>}
       {tab === "items" && <>items</>}
       {tab === "exp" && <>exp</>}
     </div>

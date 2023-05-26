@@ -38,7 +38,7 @@ const Inventorycard = ({ inv }) => {
                 {0}{" "}{inv.unit}
             </th>
             <th scope="row" className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">
-                0 ₹
+                {inv.purchaseprice*inv.openstock} ₹
             </th>
             <th scope="row" className="px-4 py-2 font-medium text-gray-900 whitespace-nowrap">
                 {inv.purchaseprice} ₹
