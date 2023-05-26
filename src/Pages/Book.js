@@ -5,6 +5,7 @@ import BookTab from '../components/BookTab';
 import Inventory from '../components/Inventory';
 import { useDispatch, useSelector } from 'react-redux';
 import { setInv } from '../state';
+import { useNavigate } from 'react-router-dom';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Book = () => {
@@ -12,6 +13,15 @@ const Book = () => {
   const token = useSelector(state => state.token);
   const selectedInv = useSelector(state => state.selectedInv);
   const dispatch = useDispatch();
+  const userId = useSelector(state => state.userId);
+  const navigate = useNavigate();
+  
+
+  useEffect(() => {
+    if (!token || !userId) {
+      navigate("/login");
+    }
+  }, [token])
 
   useEffect(() => {
     fetchInventory()
