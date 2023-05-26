@@ -22,6 +22,7 @@ const Home = () => {
     <div>
       <Header />
       <Navbar />
+      <p>Please go to booking tab</p>
     </div>
   )
 }

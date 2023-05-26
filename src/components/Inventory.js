@@ -23,7 +23,7 @@ const Inventory = ({deleteSelectedInv}) => {
 
 
     const selectedAllInventory = () => {
-        if (selectedInv.length === invtory.length) {
+        if (selectedInv?.length === invtory?.length) {
             return true;
         } else {
             return false;
