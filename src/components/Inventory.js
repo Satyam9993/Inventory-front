@@ -35,7 +35,6 @@ const Inventory = () => {
     const removeAll = (e) => {
         dispatch(setselectedRemoveAll());
     };
-    console.log(isSelectedAll);
     return (
         <div className='h-[550px] overflow-y-scroll mx-1'>
             <div className="mx-auto border-y-2">
@@ -52,25 +51,25 @@ const Inventory = () => {
                                         <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>
                                     </div>}
                                 </th>
-                                <th scope="col" className="px-6 py-3">
+                                <th scope="col" className="px-4 py-3">
                                     Item Name
                                 </th>
-                                <th scope="col" className="px-6 py-3">
+                                <th scope="col" className="px-4 py-3">
                                     Item Code
                                 </th>
-                                <th scope="col" className="px-6 py-3">
+                                <th scope="col" className="px-4 py-3">
                                     Category
                                 </th>
-                                <th scope="col" className="px-6 py-3">
+                                <th scope="col" className="px-4 py-3">
                                     Stock Quantity
                                 </th>
-                                <th scope="col" className="px-6 py-3">
+                                <th scope="col" className="px-4 py-3">
                                     Stock on hold
                                 </th>
-                                <th scope="col" className="px-6 py-3">
+                                <th scope="col" className="px-4 py-3">
                                     Stock Value
                                 </th>
-                                <th scope="col" className="px-6 py-3">
+                                <th scope="col" className="px-4 py-3">
                                     Purchase Value
                                 </th>
                             </tr>

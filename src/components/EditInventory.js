@@ -1,19 +1,21 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './style.css';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import ImageUpload from './ImageUpload';
-import { setInvAddNew } from '../state/index';
+import { setInvUpdate } from '../state/index';
 import { storage } from '../utils/firebase'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { v4 } from 'uuid';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-const AddEmployeeCard = () => {
+const EditInventory = ({inv}) => {
+    console.log("Satyam", inv);
     const dispatch = useDispatch();
     const [showModal, setShowModal] = useState(false);
     const [images, setImages] = useState([]);
+    const [isImageChange, setIsImageChange] = useState(false);
     const token = useSelector((state) => state.token);
 
     const RegisterSchema = Yup.object().shape({
@@ -38,6 +40,20 @@ const AddEmployeeCard = () => {
         taxrate: Yup.number(),
     });
 
+    useEffect(() => {
+        if(inv.image === ''){
+            setIsImageChange(true);
+        }else{
+            setIsImageChange(false);
+        }
+    }, [])
+    
+
+    const cancelImageChange = () => {
+        setIsImageChange(false);
+        setImages([]);
+    };
+
     const handleShowModal = () => {
         setShowModal(true);
     };
@@ -48,6 +64,7 @@ const AddEmployeeCard = () => {
 
     const handleAddInv = async (values) => {
         try {
+            console.log(images.length);
             if (images.length !== 0) {
                 const img = images[0]['files'];
                 const imageRef = ref(storage, `images/inv/${v4()}`);
@@ -57,9 +74,9 @@ const AddEmployeeCard = () => {
                             ...values,
                             image: url
                         }
-                        const data = await fetch(`${BACKEND_URL}/api/inv`,
+                        const data = await fetch(`${BACKEND_URL}/api/inv/${inv._id}`,
                             {
-                                method: 'POST',
+                                method: 'PUT',
                                 headers: {
                                     "Content-Type": "application/json",
                                     "Authorization": `Bearer ${token}`
@@ -68,8 +85,8 @@ const AddEmployeeCard = () => {
                             }
                         );
                         const InvData = await data.json();
-                        dispatch(setInvAddNew({
-                            inv: InvData.inv
+                        dispatch(setInvUpdate({
+                            invUpdate : InvData.inv
                         }));
                         setImages([]);
                         handleCloseModal();
@@ -80,11 +97,11 @@ const AddEmployeeCard = () => {
             } else {
                 const body = {
                     ...values,
-                    image: ''
+                    image: inv.image
                 }
-                const data = await fetch(`${BACKEND_URL}/api/inv`,
+                const data = await fetch(`${BACKEND_URL}/api/inv/${inv._id}`,
                     {
-                        method: 'POST',
+                        method: 'PUT',
                         headers: {
                             "Content-Type": "application/json",
                             "Authorization": `Bearer ${token}`
@@ -93,8 +110,8 @@ const AddEmployeeCard = () => {
                     }
                 );
                 const InvData = await data.json();
-                dispatch(setInvAddNew({
-                    inv: InvData.inv
+                dispatch(setInvUpdate({
+                    invUpdate : InvData.inv
                 }));
                 setImages([]);
                 handleCloseModal();
@@ -106,22 +123,20 @@ const AddEmployeeCard = () => {
 
     return (
         <>
-            <div className="lg:flex border border-gray-300 cursor-pointer rounded-md">
+            <div className="lg:flex cursor-pointer">
                 <button
-                    className="text-gray-800 hover:text-blue-600 hover:bg-gray-100 text-lg  font-medium px-4 py-2 inline-flex space-x-1 items-center"
+                    className="text-gray-800 hover:text-blue-600 text-lg  font-medium px-4 py-2 inline-flex space-x-1 items-center"
                     onClick={handleShowModal}
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                     </svg>
-                    <span className='mx-2'>
-                        Add to Inventory
-                    </span>
                 </button>
             </div>
+            
             {showModal && (
                 <Formik
-                    initialValues={{ itemName: '', category: '', code: '', description: '', lowstockunit: 0, unit: 'unit', openstock: 0, stockwarning: false, purchaseprice: 0, inclusivetax: false, taxrate: NaN }}
+                    initialValues={{ itemName: inv.itemName, category: inv.category, code: inv.code, description: inv.description, lowstockunit: inv.lowstockunit, unit: inv.unit, openstock: inv.openstock, stockwarning: inv.stockwarning, purchaseprice: inv.purchaseprice, inclusivetax: inv.inclusivetax, taxrate: inv.taxrate }}
                     validationSchema={RegisterSchema}
                     onSubmit={(values) => {
                         handleAddInv(values);
@@ -151,7 +166,20 @@ const AddEmployeeCard = () => {
                                                 <div className="lg:w-2/2 md:w-5/5 mx-auto">
                                                     <div className="flex flex-wrap">
                                                         <div className="p-2 w-full">
-                                                            <ImageUpload images={images} setImages={setImages} />
+                                                            {isImageChange?
+                                                            <div>
+                                                                <ImageUpload images={images} setImages={setImages} />
+                                                                <button className='border-2 border-gray-400 p-2 text-md' onClick={cancelImageChange}>Cancel</button>
+                                                            </div>
+                                                            :
+                                                            <div className='p-2'>
+                                                                <p className='text-md'>Item Image</p>
+                                                                <div className='p-2'>
+                                                                    <img src={inv.image} alt="Image"  className='h-20 w-20'/>
+                                                                </div>
+                                                                <button className='border-2 border-gray-400 p-2 text-md' onClick={()=>setIsImageChange(true)}>Change Image</button>
+                                                            </div>
+                                                            }
                                                         </div>
                                                         <div className="p-2 w-full">
                                                             <div className="relative">
@@ -161,6 +189,7 @@ const AddEmployeeCard = () => {
                                                                     name="itemName"
                                                                     className="w-full dark:bg-[#000226] bg-opacity-50 border-b border-gray-300 focus:border-gray-300 focus:dark:bg-[#000226] text-base outline-none text-gray-200 py-1 px-1 leading-8 transition-colors duration-200 ease-in-out"
                                                                     placeholder='Item Name'
+                                                                    value={values.itemName}
                                                                     onChange={handleChange('itemName')}
                                                                 />
                                                             </div>
@@ -176,6 +205,7 @@ const AddEmployeeCard = () => {
                                                                     id="category"
                                                                     className="w-full dark:bg-[#000226] bg-opacity-50 border-b border-gray-300 focus:border-gray-300 focus:dark:bg-[#000226] text-base outline-none text-gray-200 py-1 px-1 leading-8 transition-colors duration-200 ease-in-out"
                                                                     name="category"
+                                                                    value={values.category}
                                                                     onChange={handleChange('category')}
                                                                 >
                                                                     <option>Category</option>
@@ -200,6 +230,7 @@ const AddEmployeeCard = () => {
                                                                     name="code"
                                                                     className="w-full dark:bg-[#000226] bg-opacity-50 border-b border-gray-300 focus:border-gray-300 focus:dark:bg-[#000226] text-base outline-none text-gray-200 py-1 px-1 leading-8 transition-colors duration-200 ease-in-out"
                                                                     placeholder='Item Code'
+                                                                    value={values.code}
                                                                     onChange={handleChange('code')}
                                                                 />
                                                             </div>
@@ -216,6 +247,7 @@ const AddEmployeeCard = () => {
                                                                     name="description"
                                                                     className="w-full dark:bg-[#000226] bg-opacity-50 border-2 border-gray-400 focus:border-gray-300 focus:dark:bg-[#000226] text-base outline-none text-gray-200 py-1 px-1 leading-8 transition-colors duration-200 ease-in-out"
                                                                     placeholder='Item Description'
+                                                                    value={values.description}
                                                                     onChange={handleChange('description')}
                                                                 ></textarea>
                                                             </div>
@@ -257,6 +289,7 @@ const AddEmployeeCard = () => {
                                                                     id="unit"
                                                                     className="w-full dark:bg-[#000226] bg-opacity-50 border-b border-gray-300 focus:border-gray-300 focus:dark:bg-[#000226] text-base outline-none text-gray-200 py-1 px-1 leading-8 transition-colors duration-200 ease-in-out"
                                                                     name="unit"
+                                                                    value={values.unit}
                                                                     onChange={handleChange('unit')}
                                                                 >
                                                                     <option value="unit">Units(UNT)</option>
@@ -372,6 +405,7 @@ const AddEmployeeCard = () => {
                                                                         id="taxrate"
                                                                         className="w-full dark:bg-[#000226] bg-opacity-50 border-b border-gray-300 focus:border-gray-300 focus:dark:bg-[#000226] text-base outline-none text-gray-200 py-1 px-1 leading-8 transition-colors duration-200 ease-in-out"
                                                                         name="taxrate"
+                                                                        value={values.taxrate}
                                                                         onChange={handleChange('taxrate')}
                                                                     >
                                                                         <option>GST Tax Rate (%)</option>
@@ -401,7 +435,7 @@ const AddEmployeeCard = () => {
                                                                     }}
                                                                     type='submit'
                                                                 >
-                                                                    Save Now
+                                                                    Edit Save
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -422,4 +456,4 @@ const AddEmployeeCard = () => {
     )
 }
 
-export default AddEmployeeCard
+export default EditInventory;
