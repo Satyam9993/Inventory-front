@@ -37,7 +37,7 @@ const Login = () => {
 
   return (
     <div className='flex justify-center items-center h-[100vh] w-full'>
-      <div className='border-2 border-r-2 border-gray-400 w-[50%] p-10 bg-[#020320] rounded-md'>
+      <div className='border-2 border-gray-400 sm:w-[100%] md:w-[80%] lg:w-[50%] p-9 bg-[#020320] rounded-md'>
         <Formik
           initialValues={{ email: '', password: '' }}
           validationSchema={RegisterSchema}
