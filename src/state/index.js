@@ -5,6 +5,7 @@ const initialState = {
   token: null,
   inv : [],
   selectedInv : [],
+  totalPages: 1
 };
 
 export const authSlice = createSlice({
@@ -22,6 +23,7 @@ export const authSlice = createSlice({
 
     setInv: (state, action) => {
       state.inv = action.payload.inv;
+      state.totalPages = action.payload.totalPages;
     },
     setInvUpdate: (state, action) => {
       const updatedInv = state.inv.map((inv) => {

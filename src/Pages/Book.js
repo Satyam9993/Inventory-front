@@ -39,7 +39,8 @@ const Book = () => {
     );
     const InvData = await data.json();
     dispatch(setInv({
-      inv: InvData.invs
+      inv: InvData.invs,
+      totalPages: InvData.totalPages
     }))
   }
 

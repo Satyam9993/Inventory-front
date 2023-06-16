@@ -3,6 +3,7 @@ import InventoryCard from './Inventorycard'
 import { useDispatch, useSelector } from 'react-redux';
 import { setselectedInvAll, setselectedRemoveAll } from '../state';
 import AddInventory from '../components/AddInventory';
+import Pagination from './Pagination';
 
 const Inventory = ({deleteSelectedInv}) => {
     const selectedInv = useSelector(state => state.selectedInv);
@@ -112,6 +113,7 @@ const Inventory = ({deleteSelectedInv}) => {
                     </div>
                 </div>
             </div>
+            <Pagination />
         </div>
     )
 }
