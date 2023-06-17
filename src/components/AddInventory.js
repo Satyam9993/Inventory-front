@@ -4,7 +4,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import ImageUpload from './ImageUpload';
-import { setInvAddNew } from '../state/index';
+import { setInv, setInvAddNew } from '../state/index';
 import { storage } from '../utils/firebase'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { v4 } from 'uuid';
@@ -96,6 +96,7 @@ const AddEmployeeCard = () => {
                 dispatch(setInvAddNew({
                     inv: InvData.inv
                 }));
+                fetchInventory();
                 setImages([]);
                 handleCloseModal();
             }
@@ -103,6 +104,22 @@ const AddEmployeeCard = () => {
             alert(err);
         }
     };
+    const fetchInventory = async () => {
+        const data = await fetch(`${BACKEND_URL}/api/inv?pageNumber=1`,
+          {
+            method: 'GET',
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            }
+          }
+        );
+        const InvData = await data.json();
+        dispatch(setInv({
+          inv: InvData.invs,
+          totalPages: InvData.totalPages
+        }))
+      }
 
     return (
         <>
