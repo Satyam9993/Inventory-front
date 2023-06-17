@@ -22,9 +22,6 @@ const Inventory = ({deleteSelectedInv}) => {
         setInvData(invtory)
     }, [invtory])
 
-
-
-
     const selectedAllInventory = () => {
         if (selectedInv?.length === invtory?.length) {
             return true;
@@ -112,8 +109,10 @@ const Inventory = ({deleteSelectedInv}) => {
                         </table>
                     </div>
                 </div>
+                <div className='flex justify-center items-center p-5'>
+                <Pagination />
+                </div>
             </div>
-            <Pagination />
         </div>
     )
 }

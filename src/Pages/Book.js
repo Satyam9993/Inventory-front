@@ -5,7 +5,7 @@ import BookTab from '../components/BookTab';
 import Inventory from '../components/Inventory';
 import { useDispatch, useSelector } from 'react-redux';
 import { setInv } from '../state';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Book = () => {
@@ -15,7 +15,7 @@ const Book = () => {
   const dispatch = useDispatch();
   const userId = useSelector(state => state.userId);
   const navigate = useNavigate();
-  
+  const { pagenumber } = useParams();
 
   useEffect(() => {
     if (!token || !userId) {
@@ -24,11 +24,17 @@ const Book = () => {
   }, [token])
 
   useEffect(() => {
-    fetchInventory()
-  }, [])
+    if(!Number.parseInt(pagenumber)){
+      navigate("/error");
+    }
+  }, [pagenumber])
+
+  useEffect(() => {
+    fetchInventory();
+  }, [pagenumber])
 
   const fetchInventory = async () => {
-    const data = await fetch(`${BACKEND_URL}/api/inv`,
+    const data = await fetch(`${BACKEND_URL}/api/inv?pageNumber=${pagenumber}`,
       {
         method: 'GET',
         headers: {
@@ -74,7 +80,7 @@ const Book = () => {
       <Header />
       <Navbar />
       <BookTab setTab={setTab} tab={tab} />
-      {tab === "inv" && <Inventory deleteSelectedInv={deleteSelectedInv}/>}
+      {tab === "inv" && <Inventory deleteSelectedInv={deleteSelectedInv} fetchInventory={fetchInventory} />}
       {tab === "items" && <>items</>}
       {tab === "exp" && <>exp</>}
     </div>
